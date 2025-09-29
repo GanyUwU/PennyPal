@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { use, useState } from "react"
 import supabase from "./config/supabaseClient.js"
 import "./App.css"
 import {
@@ -29,6 +29,7 @@ import {
 } from "./components/ui/ui.jsx"
 import { useAuth } from "./Authcontext.jsx"
 import { useNavigate } from "react-router-dom"
+import AddPaymentForm from "./components/addPayment.jsx"
 
 function App() {
   const [activeTab, setActiveTab] = useState("DASHBOARD")
@@ -52,7 +53,7 @@ function App() {
   const toggleDarkMode = () => {
     setDarkMode(!darkMode)
   }
-
+ 
   const tabs = [
     { id: "DASHBOARD", label: "DASHBOARD", icon: <Home className="w-5 h-5" /> },
     { id: "SPENDING", label: "SPENDING", icon: <BarChart3 className="w-5 h-5" /> },
@@ -79,7 +80,7 @@ function App() {
               <div className={`w-6 h-6 rounded-full ${darkMode ? "bg-blue-400" : "bg-blue-600"}`}></div>
             </div>
             <div>
-              <h1 className="text-white font-black text-2xl tracking-tight">STUDENT AI COMMAND CENTER</h1>
+              <h1 className="text-white font-black text-2xl tracking-tight">Penny Pal</h1>
               <p className={`font-bold text-sm ${darkMode ? "text-gray-300" : "text-blue-100"}`}>
                 AUTONOMOUS LIFE MANAGEMENT
               </p>
@@ -534,6 +535,8 @@ function SpendingContent({ darkMode }) {
 
 function PaymentsContent({ darkMode }) {
   const [activePaymentTab, setActivePaymentTab] = useState("AUTO-PAYMENTS")
+ 
+  const {handleAddPayment} = useAuth();
 
   return (
     <div className="space-y-6">
@@ -649,74 +652,7 @@ function PaymentsContent({ darkMode }) {
 
       {/* RUPALI WORK HERE*/}
       {activePaymentTab === "+ ADD NEW" && (
-        <div className={`border-8 border-black p-6 ${darkMode ? "bg-gray-800 text-white" : "bg-white"}`}>
-          <h3 className="font-black text-xl mb-6">ADD NEW PAYMENT</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block font-black text-sm mb-2">PAYMENT NAME</label>
-              <Input placeholder="e.g., Monthly Rent" className="border-4 border-black font-bold" />
-            </div>
-            <div>
-              <label className="block font-black text-sm mb-2">AMOUNT (₹)</label>
-              <Input placeholder="15000" className="border-4 border-black font-bold" />
-            </div>
-            <div>
-              <label className="block font-black text-sm mb-2">CATEGORY</label>
-              <Select>
-                <SelectTrigger className="border-4 border-black font-bold">
-                  <SelectValue placeholder="Housing" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="housing">Housing</SelectItem>
-                  <SelectItem value="utilities">Utilities</SelectItem>
-                  <SelectItem value="food">Food</SelectItem>
-                  <SelectItem value="transportation">Transportation</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <label className="block font-black text-sm mb-2">FREQUENCY</label>
-              <Select>
-                <SelectTrigger className="border-4 border-black font-bold">
-                  <SelectValue placeholder="Monthly" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="monthly">Monthly</SelectItem>
-                  <SelectItem value="weekly">Weekly</SelectItem>
-                  <SelectItem value="yearly">Yearly</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <label className="block font-black text-sm mb-2">DUE DATE</label>
-              <Input type="date" className="border-4 border-black font-bold" />
-            </div>
-            <div>
-              <label className="block font-black text-sm mb-2">PAYMENT METHOD</label>
-              <Select>
-                <SelectTrigger className="border-4 border-black font-bold">
-                  <SelectValue placeholder="HDFC Bank ****1234" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="hdfc1234">HDFC Bank ****1234</SelectItem>
-                  <SelectItem value="sbi5678">SBI Bank ****5678</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          <div className="flex items-center gap-2 mt-6">
-            <input type="checkbox" id="autopay" className="w-4 h-4" />
-            <label htmlFor="autopay" className="font-black text-sm">
-              ENABLE AUTO-PAY
-            </label>
-          </div>
-          <div className="flex gap-4 mt-6">
-            <Button className="bg-blue-600 border-4 border-black font-black hover:bg-blue-700">ADD PAYMENT</Button>
-            <Button variant="outline" className="border-4 border-black font-black bg-transparent">
-              CANCEL
-            </Button>
-          </div>
-        </div>
+        <AddPaymentForm darkMode={darkMode}></AddPaymentForm>
       )}
     </div>
   )
