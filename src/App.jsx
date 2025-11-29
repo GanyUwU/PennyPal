@@ -83,9 +83,11 @@ function App() {
   }
   console.log(supabase)
 
+
   const toggleDarkMode = () => {
     setDarkMode(!darkMode)
   }
+
 
   const tabs = [
     { id: "DASHBOARD", label: "DASHBOARD", icon: <Home className="w-5 h-5" /> },
@@ -96,7 +98,10 @@ function App() {
   ]
 
   return (
-    <div className={`min-h-screen transition-colors duration-300 ${darkMode ? "dark bg-gray-900" : "bg-white"}`}>
+    <div
+      className={`min-h-screen transition-colors duration-300 ${darkMode ? "dark bg-gray-900" : "bg-white"
+        }`}
+    >
       {/* Header */}
       <header
         className={`border-b-4 border-black p-4 transition-all duration-300 hover:shadow-lg ${darkMode ? "bg-gray-800" : "bg-blue-600"
@@ -108,11 +113,19 @@ function App() {
               className={`w-12 h-12 border-4 border-black rounded-full flex items-center justify-center animate-pulse ${darkMode ? "bg-blue-600" : "bg-white"
                 }`}
             >
-              <div className={`w-6 h-6 rounded-full ${darkMode ? "bg-yellow-400" : "bg-blue-600"}`}></div>
+              <div
+                className={`w-6 h-6 rounded-full ${darkMode ? "bg-yellow-400" : "bg-blue-600"
+                  }`}
+              ></div>
             </div>
             <div>
-              <h1 className="text-white font-black text-2xl tracking-tight">Penny Pal</h1>
-              <p className={`font-bold text-sm ${darkMode ? "text-gray-300" : "text-blue-100"}`}>
+              <h1 className="text-white font-black text-2xl tracking-tight">
+                Penny Pal
+              </h1>
+              <p
+                className={`font-bold text-sm ${darkMode ? "text-gray-300" : "text-blue-100"
+                  }`}
+              >
                 AUTONOMOUS LIFE MANAGEMENT
               </p>
             </div>
@@ -137,18 +150,28 @@ function App() {
       </header>
 
       {/* Navigation */}
-      <nav className={`border-b-4 p-4 m-2 border-black ${darkMode ? "bg-gray-800" : "bg-gray-100"}`}>
+      <nav
+        className={`border-b-4 p-4 m-2 border-black ${darkMode ? "bg-gray-800" : "bg-gray-100"
+          }`}
+      >
         <div className="flex">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => handleTabChange(tab.id)}
               className={`px-6 py-4 font-black text-sm border-r-4 border-black transition-all duration-300 flex items-center gap-2 ${activeTab === tab.id
-                ? `${darkMode ? "bg-blue-500" : "bg-blue-600"} text-white transform translate-y-[-2px] shadow-lg`
-                : `${darkMode ? "bg-gray-700 text-white hover:bg-gray-600" : "bg-white text-black hover:bg-gray-50"} hover:transform hover:translate-y-[-1px]`
+                ? `${darkMode ? "bg-blue-500" : "bg-blue-600"
+                } text-white transform translate-y-[-2px] shadow-lg`
+                : `${darkMode
+                  ? "bg-gray-700 text-white hover:bg-gray-600"
+                  : "bg-white text-black hover:bg-gray-50"
+                } hover:transform hover:translate-y-[-1px]`
                 }`}
             >
-              <span className={`transition-transform duration-300 ${activeTab === tab.id ? "rotate-12" : ""}`}>
+              <span
+                className={`transition-transform duration-300 ${activeTab === tab.id ? "rotate-12" : ""
+                  }`}
+              >
                 {tab.icon}
               </span>
               {tab.label}
@@ -163,8 +186,15 @@ function App() {
           {activeTab === "DASHBOARD" && <DashboardContent darkMode={darkMode} aiAgents={aiAgents.length > 0 ? aiAgents : undefined} session={session} />}
           {activeTab === "SPENDING" && <SpendingContent darkMode={darkMode} />}
           {activeTab === "PAYMENTS" && <PaymentsContent darkMode={darkMode} />}
-          {activeTab === "CALENDAR" && <BudgetPlannerContent darkMode={darkMode} />}
-          {activeTab === "SETTINGS" && <SettingsContent darkMode={darkMode} toggleDarkMode={toggleDarkMode} />}
+          {activeTab === "CALENDAR" && (
+            <BudgetPlannerContent darkMode={darkMode} />
+          )}
+          {activeTab === "SETTINGS" && (
+            <SettingsContent
+              darkMode={darkMode}
+              toggleDarkMode={toggleDarkMode}
+            />
+          )}
         </div>
 
         {isLoading && (
@@ -286,7 +316,8 @@ function DashboardContent({ darkMode, aiAgents: propAiAgents, session }) {
       name: "AUTO-PAY AGENT",
       status: "Active",
       icon: <DollarSign className="w-6 h-6" />,
-      description: "Automatically manages rent, utilities, and subscription payments",
+      description:
+        "Automatically manages rent, utilities, and subscription payments",
       lastAction: "Paid rent ₹15,000 - 3 days early to avoid late fees",
       saved: "₹1,200",
     },
@@ -295,7 +326,8 @@ function DashboardContent({ darkMode, aiAgents: propAiAgents, session }) {
       name: "BUDGET OPTIMIZER",
       status: "Active",
       icon: <Target className="w-6 h-6" />,
-      description: "Analyzes spending patterns and optimizes your budget allocation",
+      description:
+        "Analyzes spending patterns and optimizes your budget allocation",
       lastAction: "Identified ₹2,500 in potential monthly savings",
       saved: "₹8,200",
     },
@@ -313,7 +345,8 @@ function DashboardContent({ darkMode, aiAgents: propAiAgents, session }) {
       name: "MEAL PLANNER",
       status: "Active",
       icon: <Utensils className="w-6 h-6" />,
-      description: "Plans nutritious, budget-friendly meals and grocery lists",
+      description:
+        "Plans nutritious, budget-friendly meals and grocery lists",
       lastAction: "Generated weekly meal plan - ₹1,800 grocery budget",
       saved: "₹3,200",
     },
@@ -322,7 +355,8 @@ function DashboardContent({ darkMode, aiAgents: propAiAgents, session }) {
       name: "SCHOLARSHIP HUNTER",
       status: "Active",
       icon: <TrendingUp className="w-6 h-6" />,
-      description: "Finds and applies to relevant scholarships automatically",
+      description:
+        "Finds and applies to relevant scholarships automatically",
       lastAction: "Applied to 3 new scholarships worth ₹50,000 total",
       saved: "₹0",
     },
@@ -331,7 +365,8 @@ function DashboardContent({ darkMode, aiAgents: propAiAgents, session }) {
       name: "HOUSING OPTIMIZER",
       status: "Inactive",
       icon: <Home className="w-6 h-6" />,
-      description: "Monitors housing market for better deals and manages utilities",
+      description:
+        "Monitors housing market for better deals and manages utilities",
       lastAction: "Found 2 cheaper housing options - ₹3,000/month savings",
       saved: "₹4,500",
     },
@@ -405,8 +440,42 @@ function DashboardContent({ darkMode, aiAgents: propAiAgents, session }) {
     }
   }
 
-  return (
+  const [budgetAgentResponse, setBudgetAgentResponse] = useState("")
+  const [isCheckingBudget, setIsCheckingBudget] = useState(false)
 
+  const checkBudgetWithAgent = async () => {
+    if (!session?.user?.id) {
+      alert("Please log in to check your budget")
+      return
+    }
+
+    setIsCheckingBudget(true)
+    setBudgetAgentResponse("Budget Agent is analyzing your spending...")
+
+    try {
+      // Call the dedicated budget check endpoint
+      const response = await fetch(`http://localhost:8000/api/user/${session.user.id}/budget-check`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        setBudgetAgentResponse(` ${data.agent_response}`)
+      } else {
+        setBudgetAgentResponse("Failed to get budget analysis")
+      }
+    } catch (error) {
+      setBudgetAgentResponse(" Error connecting to Budget Agent. Check if backend is running.")
+      console.error("Budget check error:", error)
+    } finally {
+      setIsCheckingBudget(false)
+    }
+  }
+
+  return (
     <div className="space-y-8">
       {/* Budget Agent Status Card */}
       <div className={`border-4 border-black p-6 ${darkMode ? "bg-gradient-to-r from-blue-900 to-purple-900 text-white" : "bg-gradient-to-r from-blue-500 to-purple-500 text-white"}`}>
@@ -446,8 +515,8 @@ function DashboardContent({ darkMode, aiAgents: propAiAgents, session }) {
 
       </div>
 
-      {/* AI Agents Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* AI Agents Grid with merged styles */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 agent-card-container">
         {aiAgents.map((agent, index) => (
           <div
             key={agent.id}
@@ -458,7 +527,8 @@ function DashboardContent({ darkMode, aiAgents: propAiAgents, session }) {
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
                 <div
-                  className={`p-2 border-2 border-black ${darkMode ? "bg-gray-700 text-white" : "bg-black text-white"}`}
+                  className={`p-2 border-2 border-black rounded-2xl ${darkMode ? "bg-gray-700 text-white" : "bg-black text-white"
+                    }`}
                 >
                   {agent.icon}
                 </div>
@@ -471,7 +541,10 @@ function DashboardContent({ darkMode, aiAgents: propAiAgents, session }) {
                         : "bg-gray-400"
                       }`}
                   ></span>
-                  <span className={`text-xs font-bold ${darkMode ? "text-gray-400" : "text-gray-600"}`}>
+                  <span
+                    className={`text-xs font-bold status-indicator ${darkMode ? "text-gray-400" : "text-gray-600"
+                      }`}
+                  >
                     {agent.status}
                   </span>
                 </div>
@@ -480,7 +553,7 @@ function DashboardContent({ darkMode, aiAgents: propAiAgents, session }) {
                 <Button
                   size="sm"
                   variant="outline"
-                  className="border-2 border-black hover:bg-blue-600 hover:text-white transition-all duration-300 bg-transparent"
+                  className="border-2 border-black hover:bg-blue-600 hover:text-white transition-all duration-300 bg-transparent rounded-xl"
                 >
                   <Settings className="w-4 h-4" />
                 </Button>
@@ -488,13 +561,21 @@ function DashboardContent({ darkMode, aiAgents: propAiAgents, session }) {
             </div>
 
             <h3 className="font-black text-lg mb-2">{agent.name}</h3>
-            <p className={`text-sm font-bold mb-4 ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
+            <p
+              className={`text-sm font-bold mb-4 ${darkMode ? "text-gray-300" : "text-gray-700"
+                }`}
+            >
               {agent.description}
             </p>
 
             <div className="space-y-2">
               <div>
-                <p className={`text-xs font-bold ${darkMode ? "text-gray-400" : "text-gray-600"}`}>LAST ACTION:</p>
+                <p
+                  className={`text-xs font-bold ${darkMode ? "text-gray-400" : "text-gray-600"
+                    }`}
+                >
+                  LAST ACTION:
+                </p>
                 <p className="text-sm font-bold">{agent.lastAction}</p>
               </div>
 
@@ -508,11 +589,16 @@ function DashboardContent({ darkMode, aiAgents: propAiAgents, session }) {
         ))}
       </div>
 
-      {/* Bottom Section */}
+      {/* Bottom Section (same as original) */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Recent Activity */}
-        <div className={`lg:col-span-1 border-8 border-black p-6 ${darkMode ? "bg-gray-800 text-white" : "bg-white"}`}>
-          <h3 className="font-black text-xl mb-4 border-b-4 border-black pb-2">RECENT ACTIVITY</h3>
+        <div
+          className={`lg:col-span-1 border-8 border-black p-6 ${darkMode ? "bg-gray-800 text-white" : "bg-white"
+            }`}
+        >
+          <h3 className="font-black text-xl mb-4 border-b-4 border-black pb-2">
+            RECENT ACTIVITY
+          </h3>
           <div className="space-y-4">
             {recentActivity.map((activity, index) => (
               <div
@@ -531,12 +617,24 @@ function DashboardContent({ darkMode, aiAgents: propAiAgents, session }) {
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
                     <p className="font-black text-sm">{activity.type}</p>
-                    {activity.amount && <span className="text-green-600 font-black text-sm">{activity.amount}</span>}
+                    {activity.amount && (
+                      <span className="text-green-600 font-black text-sm">
+                        {activity.amount}
+                      </span>
+                    )}
                   </div>
-                  <p className={`text-xs font-bold ${darkMode ? "text-gray-400" : "text-gray-600"}`}>
+                  <p
+                    className={`text-xs font-bold ${darkMode ? "text-gray-400" : "text-gray-600"
+                      }`}
+                  >
                     {activity.description}
                   </p>
-                  <p className={`text-xs mt-1 ${darkMode ? "text-gray-500" : "text-gray-500"}`}>{activity.time}</p>
+                  <p
+                    className={`text-xs mt-1 ${darkMode ? "text-gray-500" : "text-gray-500"
+                      }`}
+                  >
+                    {activity.time}
+                  </p>
                 </div>
               </div>
             ))}
@@ -544,16 +642,41 @@ function DashboardContent({ darkMode, aiAgents: propAiAgents, session }) {
         </div>
 
         {/* Monthly Budget */}
-        <div className={`lg:col-span-2 border-8 border-black p-6 ${darkMode ? "bg-gray-800 text-white" : "bg-white"}`}>
-          <h3 className="font-black text-xl mb-4 border-b-4 border-black pb-2">MONTHLY BUDGET</h3>
+        <div
+          className={`lg:col-span-2 border-8 border-black p-6 ${darkMode ? "bg-gray-800 text-white" : "bg-white"
+            }`}
+        >
+          <h3 className="font-black text-xl mb-4 border-b-4 border-black pb-2">
+            MONTHLY BUDGET
+          </h3>
           <div className="space-y-4">
             {[
               { category: "RENT", spent: 15000, budget: 15000, color: "bg-red-500" },
               { category: "FOOD", spent: 8500, budget: 9000, color: "bg-green-500" },
-              { category: "TRANSPORTATION", spent: 3200, budget: 4000, color: "bg-blue-500" },
-              { category: "ENTERTAINMENT", spent: 2800, budget: 3500, color: "bg-purple-500" },
-              { category: "UTILITIES", spent: 2500, budget: 3000, color: "bg-yellow-500" },
-              { category: "MISCELLANEOUS", spent: 1800, budget: 2500, color: "bg-pink-500" },
+              {
+                category: "TRANSPORTATION",
+                spent: 3200,
+                budget: 4000,
+                color: "bg-blue-500",
+              },
+              {
+                category: "ENTERTAINMENT",
+                spent: 2800,
+                budget: 3500,
+                color: "bg-purple-500",
+              },
+              {
+                category: "UTILITIES",
+                spent: 2500,
+                budget: 3000,
+                color: "bg-yellow-500",
+              },
+              {
+                category: "MISCELLANEOUS",
+                spent: 1800,
+                budget: 2500,
+                color: "bg-pink-500",
+              },
             ].map((item, index) => {
               const percentage = (item.spent / item.budget) * 100
               const remaining = ((item.budget - item.spent) / item.budget) * 100
@@ -571,11 +694,15 @@ function DashboardContent({ darkMode, aiAgents: propAiAgents, session }) {
                       style={{ width: `${percentage}%` }}
                     ></div>
                     <div
-                      className={`${darkMode ? "bg-gray-600" : "bg-gray-200"}`}
+                      className={`${darkMode ? "bg-gray-600" : "bg-gray-200"
+                        }`}
                       style={{ width: `${remaining}%` }}
                     ></div>
                   </div>
-                  <p className={`text-xs font-bold ${darkMode ? "text-gray-400" : "text-gray-600"}`}>
+                  <p
+                    className={`text-xs font-bold ${darkMode ? "text-gray-400" : "text-gray-600"
+                      }`}
+                  >
                     {Math.round(remaining)}% REMAINING
                   </p>
                 </div>
@@ -584,7 +711,9 @@ function DashboardContent({ darkMode, aiAgents: propAiAgents, session }) {
           </div>
 
           <div className="mt-6 bg-blue-600 text-white p-4 border-4 border-black">
-            <h4 className="font-black text-sm mb-2">AI OPTIMIZATION SUGGESTIONS:</h4>
+            <h4 className="font-black text-sm mb-2">
+              AI OPTIMIZATION SUGGESTIONS:
+            </h4>
             <ul className="text-xs font-bold space-y-1">
               <li>• REDUCE FOOD SPENDING BY ₹1,500/MONTH</li>
               <li>• SWITCH TO CHEAPER PHONE PLAN: SAVE ₹400</li>
@@ -700,16 +829,55 @@ function SpendingContent({ darkMode }) {
 
       {/* Category Breakdown and Monthly Trend */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className={`border-8 border-black p-6 ${darkMode ? "bg-gray-800 text-white" : "bg-white"}`}>
+        <div
+          className={`border-8 border-black p-6 ${darkMode ? "bg-gray-800 text-white" : "bg-white"
+            }`}
+        >
           <h3 className="font-black text-xl mb-4">CATEGORY BREAKDOWN</h3>
           <div className="space-y-4">
             {[
-              { name: "Rent", amount: 15000, percentage: 45, transactions: 1, color: "bg-red-500" },
-              { name: "Food", amount: 8500, percentage: 25, transactions: 47, color: "bg-green-500" },
-              { name: "Transportation", amount: 3200, percentage: 9, transactions: 23, color: "bg-blue-500" },
-              { name: "Entertainment", amount: 3000, percentage: 8, transactions: 15, color: "bg-purple-500" },
-              { name: "Utilities", amount: 2500, percentage: 7, transactions: 4, color: "bg-yellow-500" },
-              { name: "Education", amount: 2000, percentage: 6, transactions: 8, color: "bg-pink-500" },
+              {
+                name: "Rent",
+                amount: 15000,
+                percentage: 45,
+                transactions: 1,
+                color: "bg-red-500",
+              },
+              {
+                name: "Food",
+                amount: 8500,
+                percentage: 25,
+                transactions: 47,
+                color: "bg-green-500",
+              },
+              {
+                name: "Transportation",
+                amount: 3200,
+                percentage: 9,
+                transactions: 23,
+                color: "bg-blue-500",
+              },
+              {
+                name: "Entertainment",
+                amount: 3000,
+                percentage: 8,
+                transactions: 15,
+                color: "bg-purple-500",
+              },
+              {
+                name: "Utilities",
+                amount: 2500,
+                percentage: 7,
+                transactions: 4,
+                color: "bg-yellow-500",
+              },
+              {
+                name: "Education",
+                amount: 2000,
+                percentage: 6,
+                transactions: 8,
+                color: "bg-pink-500",
+              },
             ].map((category, index) => (
               <div key={index} className="space-y-2">
                 <div className="flex justify-between items-center">
@@ -717,11 +885,19 @@ function SpendingContent({ darkMode }) {
                     <div className={`w-4 h-4 ${category.color}`}></div>
                     {category.name}
                   </span>
-                  <span className="font-black text-sm">₹{category.amount.toLocaleString()}</span>
+                  <span className="font-black text-sm">
+                    ₹{category.amount.toLocaleString()}
+                  </span>
                 </div>
                 <div className="flex border-4 border-black h-4">
-                  <div className={`${category.color}`} style={{ width: `${category.percentage}%` }}></div>
-                  <div className="bg-gray-200" style={{ width: `${100 - category.percentage}%` }}></div>
+                  <div
+                    className={`${category.color}`}
+                    style={{ width: `${category.percentage}%` }}
+                  ></div>
+                  <div
+                    className="bg-gray-200"
+                    style={{ width: `${100 - category.percentage}%` }}
+                  ></div>
                 </div>
                 <div className="flex justify-between text-xs font-bold text-gray-600">
                   <span>{category.percentage}% OF TOTAL</span>
@@ -732,7 +908,10 @@ function SpendingContent({ darkMode }) {
           </div>
         </div>
 
-        <div className={`border-8 border-black p-6 ${darkMode ? "bg-gray-800 text-white" : "bg-white"}`}>
+        <div
+          className={`border-8 border-black p-6 ${darkMode ? "bg-gray-800 text-white" : "bg-white"
+            }`}
+        >
           <h3 className="font-black text-xl mb-4">MONTHLY TREND</h3>
           <div className="space-y-3">
             {[
@@ -803,7 +982,10 @@ function PaymentsContent({ darkMode }) {
 
   return (
     <div className="space-y-6">
-      <h2 className={`text-3xl font-black border-b-4 border-black pb-2 ${darkMode ? "text-white" : ""}`}>
+      <h2
+        className={`text-3xl font-black border-b-4 border-black pb-2 ${darkMode ? "text-white" : ""
+          }`}
+      >
         PAYMENT MANAGEMENT
       </h2>
 
@@ -825,7 +1007,10 @@ function PaymentsContent({ darkMode }) {
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className={`p-6 border-8 border-black ${darkMode ? "bg-gray-800 text-white" : "bg-black text-white"}`}>
+        <div
+          className={`p-6 border-8 border-black ${darkMode ? "bg-gray-800 text-white" : "bg-black text-white"
+            }`}
+        >
           <p className="font-black text-sm mb-2">MONTHLY AUTO-PAY</p>
           <p className="font-black text-3xl">₹{totalAutopay.toLocaleString()}</p>
         </div>
@@ -833,7 +1018,10 @@ function PaymentsContent({ darkMode }) {
           <p className="font-black text-sm mb-2">ACTIVE PAYMENTS</p>
           <p className="font-black text-3xl">{activeCount}</p>
         </div>
-        <div className={`p-6 border-8 border-black ${darkMode ? "bg-gray-700 text-white" : "bg-white"}`}>
+        <div
+          className={`p-6 border-8 border-black ${darkMode ? "bg-gray-700 text-white" : "bg-white"
+            }`}
+        >
           <p className="font-black text-sm mb-2">HIGH PRIORITY DUES</p>
           <p className="font-black text-3xl">{highPriority}</p>
         </div>
@@ -841,7 +1029,10 @@ function PaymentsContent({ darkMode }) {
 
       {/* Payment Content */}
       {activePaymentTab === "AUTO-PAYMENTS" && (
-        <div className={`border-8 border-black p-6 ${darkMode ? "bg-gray-800 text-white" : "bg-white"}`}>
+        <div
+          className={`border-8 border-black p-6 ${darkMode ? "bg-gray-800 text-white" : "bg-white"
+            }`}
+        >
           <h3 className="font-black text-xl mb-4">AUTOMATED PAYMENTS</h3>
           {loading ? (
             <p className="text-center py-8 font-bold">Loading payments...</p>
@@ -903,8 +1094,7 @@ function PaymentsContent({ darkMode }) {
   )
 }
 
-
-// BDUGET PLANNER CONTENT
+// BUDGET PLANNER CONTENT
 
 function BudgetPlannerContent({ darkMode }) {
   const [budget, setBudget] = useState("")
@@ -932,7 +1122,10 @@ function BudgetPlannerContent({ darkMode }) {
 
   return (
     <div className="space-y-6">
-      <h2 className={`text-3xl font-black border-b-4 border-black pb-2 ${darkMode ? "text-white" : ""}`}>
+      <h2
+        className={`text-3xl font-black border-b-4 border-black pb-2 ${darkMode ? "text-white" : ""
+          }`}
+      >
         BUDGET PLANNER
       </h2>
       <div className={`border-8 border-black p-6 ${darkMode ? "bg-gray-800 text-white" : "bg-white"}`}>
@@ -963,8 +1156,16 @@ function SettingsContent({ darkMode, toggleDarkMode }) {
 
   return (
     <div className="space-y-6">
-      <h2 className={`text-3xl font-black border-b-4 border-black pb-2 ${darkMode ? "text-white" : ""}`}>SETTINGS</h2>
-      <div className={`border-8 border-black p-6 ${darkMode ? "bg-gray-800 text-white" : "bg-white"}`}>
+      <h2
+        className={`text-3xl font-black border-b-4 border-black pb-2 ${darkMode ? "text-white" : ""
+          }`}
+      >
+        SETTINGS
+      </h2>
+      <div
+        className={`border-8 border-black p-6 ${darkMode ? "bg-gray-800 text-white" : "bg-white"
+          }`}
+      >
         <div className="space-y-6">
           {/* Dark Mode Toggle */}
           <div className={`flex items-center justify-between p-6 border-4 ${darkMode ? "border-gray-600 bg-gray-700" : "border-black bg-gray-50"}`}>
@@ -1020,7 +1221,7 @@ function SettingsContent({ darkMode, toggleDarkMode }) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className={`p-6 border-4 ${darkMode ? "border-gray-600 bg-gray-700 hover:bg-gray-650" : "border-black bg-white hover:bg-gray-50"} transition-colors cursor-pointer`}>
               <h4 className="font-black text-md mb-2">NOTIFICATIONS</h4>
-              <p className={`text-sm font-bold ${darkMode ? "text-gray-300" : "text-gray-600"}`}>
+              <p className={`text-sm font-bold ${darkMode ? "text-gray-400" : "text-gray-600"}`}>
                 Manage your notification preferences
               </p>
               <div className="mt-4 space-y-2">

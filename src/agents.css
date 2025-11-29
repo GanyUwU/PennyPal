@@ -1,0 +1,254 @@
+/* Unique Agent Card Patterns with Curved Borders */
+
+/* Base Agent Card Styling */
+.agent-card-container > div {
+  border-radius: 35px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.agent-card-container > div::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+  border-radius: 35px;
+}
+
+.agent-card-container > div:hover::before {
+  opacity: 1;
+}
+
+/* Agent Card 1 - Diagonal Stripes */
+.agent-card-container > div:nth-child(1) {
+  border-radius: 35px 35px 15px 35px;
+  background: 
+    repeating-linear-gradient(
+      45deg,
+      white 0px,
+      white 20px,
+      rgba(102, 126, 234, 0.03) 20px,
+      rgba(102, 126, 234, 0.03) 40px
+    );
+}
+
+.agent-card-container > div:nth-child(1)::before {
+  background: 
+    repeating-linear-gradient(
+      45deg,
+      transparent 0px,
+      transparent 20px,
+      rgba(102, 126, 234, 0.08) 20px,
+      rgba(102, 126, 234, 0.08) 40px
+    );
+}
+
+/* Agent Card 2 - Dots Pattern */
+.agent-card-container > div:nth-child(2) {
+  border-radius: 15px 35px 35px 35px;
+  background: 
+    radial-gradient(circle at 20px 20px, rgba(118, 75, 162, 0.05) 2px, transparent 2px),
+    radial-gradient(circle at 60px 60px, rgba(102, 126, 234, 0.05) 2px, transparent 2px),
+    white;
+  background-size: 80px 80px;
+  background-position: 0 0, 40px 40px;
+}
+
+.agent-card-container > div:nth-child(2)::before {
+  background: 
+    radial-gradient(circle at 20px 20px, rgba(118, 75, 162, 0.12) 3px, transparent 3px),
+    radial-gradient(circle at 60px 60px, rgba(102, 126, 234, 0.12) 3px, transparent 3px);
+  background-size: 80px 80px;
+  background-position: 0 0, 40px 40px;
+}
+
+/* Agent Card 3 - Grid Pattern */
+.agent-card-container > div:nth-child(3) {
+  border-radius: 35px 15px 35px 35px;
+  background: 
+    linear-gradient(90deg, rgba(102, 126, 234, 0.03) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(118, 75, 162, 0.03) 1px, transparent 1px),
+    white;
+  background-size: 40px 40px;
+}
+
+.agent-card-container > div:nth-child(3)::before {
+  background: 
+    linear-gradient(90deg, rgba(102, 126, 234, 0.1) 2px, transparent 2px),
+    linear-gradient(0deg, rgba(118, 75, 162, 0.1) 2px, transparent 2px);
+  background-size: 40px 40px;
+}
+
+/* Agent Card 4 - Waves Pattern */
+.agent-card-container > div:nth-child(4) {
+  border-radius: 35px 35px 35px 15px;
+  background: 
+    radial-gradient(ellipse at top, rgba(102, 126, 234, 0.05) 0%, transparent 60%),
+    radial-gradient(ellipse at bottom, rgba(118, 75, 162, 0.05) 0%, transparent 60%),
+    white;
+}
+
+.agent-card-container > div:nth-child(4)::before {
+  background: 
+    radial-gradient(ellipse at top, rgba(102, 126, 234, 0.15) 0%, transparent 60%),
+    radial-gradient(ellipse at bottom, rgba(118, 75, 162, 0.15) 0%, transparent 60%);
+}
+
+/* Agent Card 5 - Zigzag Pattern */
+.agent-card-container > div:nth-child(5) {
+  border-radius: 20px 35px 20px 35px;
+  background: 
+    repeating-linear-gradient(
+      135deg,
+      white 0px,
+      white 15px,
+      rgba(102, 126, 234, 0.04) 15px,
+      rgba(102, 126, 234, 0.04) 30px
+    );
+}
+
+.agent-card-container > div:nth-child(5)::before {
+  background: 
+    repeating-linear-gradient(
+      135deg,
+      transparent 0px,
+      transparent 15px,
+      rgba(102, 126, 234, 0.1) 15px,
+      rgba(102, 126, 234, 0.1) 30px
+    );
+}
+
+/* Agent Card 6 - Radial Circles */
+.agent-card-container > div:nth-child(6) {
+  border-radius: 35px 20px 35px 20px;
+  background: 
+    radial-gradient(circle at 30% 30%, rgba(118, 75, 162, 0.06) 0%, transparent 40%),
+    radial-gradient(circle at 70% 70%, rgba(102, 126, 234, 0.06) 0%, transparent 40%),
+    white;
+}
+
+.agent-card-container > div:nth-child(6)::before {
+  background: 
+    radial-gradient(circle at 30% 30%, rgba(118, 75, 162, 0.15) 0%, transparent 40%),
+    radial-gradient(circle at 70% 70%, rgba(102, 126, 234, 0.15) 0%, transparent 40%);
+}
+
+/* Hover Effect for All Cards */
+.agent-card-container > div:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.1),
+    0 0 0 5px rgba(102, 126, 234, 0.1);
+}
+
+/* Alternative Border Styles */
+.curved-border-1 { border-radius: 40px 10px 40px 10px; }
+.curved-border-2 { border-radius: 10px 40px 10px 40px; }
+.curved-border-3 { border-radius: 40px 40px 10px 10px; }
+.curved-border-4 { border-radius: 10px 10px 40px 40px; }
+.curved-border-5 { border-radius: 50% 20% 50% 20%; }
+.curved-border-6 { border-radius: 20% 50% 20% 50%; }
+
+/* Status Indicator with Curved Border */
+.status-indicator {
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 0.75rem;
+  font-weight: 900;
+  display: inline-block;
+}
+
+/* Card Content Border Decoration */
+.card-decoration {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  border: 3px solid rgba(102, 126, 234, 0.1);
+  border-radius: 50%;
+  top: -50px;
+  right: -50px;
+  pointer-events: none;
+}
+
+/* Animated Border Patterns */
+@keyframes borderPulse {
+  0%, 100% {
+    border-radius: 35px 35px 15px 35px;
+  }
+  50% {
+    border-radius: 15px 35px 35px 35px;
+  }
+}
+
+.agent-card-container > div:hover {
+  animation: borderPulse 3s ease-in-out infinite;
+}
+
+/* Glass Morphism Effect for Cards */
+.glass-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 4px solid rgba(102, 126, 234, 0.2);
+  border-radius: 30px;
+}
+
+/* Dark Mode Card Adjustments */
+.dark .agent-card-container > div:nth-child(1) {
+  background: 
+    repeating-linear-gradient(
+      45deg,
+      #1e293b 0px,
+      #1e293b 20px,
+      rgba(102, 126, 234, 0.08) 20px,
+      rgba(102, 126, 234, 0.08) 40px
+    );
+}
+
+.dark .agent-card-container > div:nth-child(2) {
+  background: 
+    radial-gradient(circle at 20px 20px, rgba(118, 75, 162, 0.15) 2px, transparent 2px),
+    radial-gradient(circle at 60px 60px, rgba(102, 126, 234, 0.15) 2px, transparent 2px),
+    #1e293b;
+  background-size: 80px 80px;
+  background-position: 0 0, 40px 40px;
+}
+
+.dark .agent-card-container > div:nth-child(3) {
+  background: 
+    linear-gradient(90deg, rgba(102, 126, 234, 0.1) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(118, 75, 162, 0.1) 1px, transparent 1px),
+    #1e293b;
+  background-size: 40px 40px;
+}
+
+.dark .agent-card-container > div:nth-child(4) {
+  background: 
+    radial-gradient(ellipse at top, rgba(102, 126, 234, 0.1) 0%, transparent 60%),
+    radial-gradient(ellipse at bottom, rgba(118, 75, 162, 0.1) 0%, transparent 60%),
+    #1e293b;
+}
+
+.dark .agent-card-container > div:nth-child(5) {
+  background: 
+    repeating-linear-gradient(
+      135deg,
+      #1e293b 0px,
+      #1e293b 15px,
+      rgba(102, 126, 234, 0.08) 15px,
+      rgba(102, 126, 234, 0.08) 30px
+    );
+}
+
+.dark .agent-card-container > div:nth-child(6) {
+  background: 
+    radial-gradient(circle at 30% 30%, rgba(118, 75, 162, 0.12) 0%, transparent 40%),
+    radial-gradient(circle at 70% 70%, rgba(102, 126, 234, 0.12) 0%, transparent 40%),
+    #1e293b;
+}
