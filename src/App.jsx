@@ -1,6 +1,6 @@
 "use client"
 
-import { use, useState } from "react"
+import { use, useState, useEffect } from "react"
 import supabase from "./config/supabaseClient.js"
 import "./App.css"
 import {
@@ -26,6 +26,7 @@ import {
   Target,
   Moon,
   Sun,
+  Bot,
 } from "./components/ui/ui.jsx"
 import { useAuth } from "./Authcontext.jsx"
 import { useNavigate } from "react-router-dom"
@@ -35,9 +36,41 @@ function App() {
   const [activeTab, setActiveTab] = useState("DASHBOARD")
   const [isLoading, setIsLoading] = useState(false)
   const [darkMode, setDarkMode] = useState(false)
+  const [aiAgents, setAiAgents] = useState([])
+  const [dashboardData, setDashboardData] = useState(null)
 
-  const {session, signOut} = useAuth();
-  const navigate = useNavigate(); 
+  const { session, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchDashboard = async () => {
+      if (!session?.user?.id) return;
+
+      try {
+        // Use the auth_id from the session. 
+        // Note: In a real app, you might use the user's UUID from Supabase auth.
+        // Here we assume session.user.id is the auth_id expected by the backend.
+        const response = await fetch(`http://localhost:8000/api/user/${session.user.id}/dashboard`);
+        if (response.ok) {
+          const data = await response.json();
+          setDashboardData(data);
+          // Transform backend insights/agents to frontend format if needed
+          // For now, we'll assume the backend returns a list of agents/insights
+          // Or we can mock the transformation here if the backend structure differs
+          if (data.ai_insights) {
+            // This is a placeholder. You might need to adjust based on actual backend response structure
+            // For this demo, we will keep the mock agents if backend is empty, 
+            // or merge them.
+            console.log("Fetched dashboard data:", data);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching dashboard:", error);
+      }
+    };
+
+    fetchDashboard();
+  }, [session]);
 
   const handleTabChange = (tabId) => {
     if (tabId !== activeTab) {
@@ -49,11 +82,11 @@ function App() {
     }
   }
   console.log(supabase)
-  
+
   const toggleDarkMode = () => {
     setDarkMode(!darkMode)
   }
- 
+
   const tabs = [
     { id: "DASHBOARD", label: "DASHBOARD", icon: <Home className="w-5 h-5" /> },
     { id: "SPENDING", label: "SPENDING", icon: <BarChart3 className="w-5 h-5" /> },
@@ -66,18 +99,16 @@ function App() {
     <div className={`min-h-screen transition-colors duration-300 ${darkMode ? "dark bg-gray-900" : "bg-white"}`}>
       {/* Header */}
       <header
-        className={`border-b-4 border-black p-4 transition-all duration-300 hover:shadow-lg ${
-          darkMode ? "bg-gray-800" : "bg-blue-600"
-        }`}
+        className={`border-b-4 border-black p-4 transition-all duration-300 hover:shadow-lg ${darkMode ? "bg-gray-800" : "bg-blue-600"
+          }`}
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <div
-              className={`w-12 h-12 border-2 border-black rounded-full flex items-center justify-center animate-pulse ${
-                darkMode ? "bg-gray-700" : "bg-white"
-              }`}
+              className={`w-12 h-12 border-4 border-black rounded-full flex items-center justify-center animate-pulse ${darkMode ? "bg-blue-600" : "bg-white"
+                }`}
             >
-              <div className={`w-6 h-6 rounded-full ${darkMode ? "bg-blue-400" : "bg-blue-600"}`}></div>
+              <div className={`w-6 h-6 rounded-full ${darkMode ? "bg-yellow-400" : "bg-blue-600"}`}></div>
             </div>
             <div>
               <h1 className="text-white font-black text-2xl tracking-tight">Penny Pal</h1>
@@ -87,28 +118,17 @@ function App() {
             </div>
           </div>
 
-          <div className="flex items-center gap-6">
-            <div className="text-right">
-              <p className={`font-bold text-sm ${darkMode ? "text-gray-300" : "text-blue-100"}`}>TOTAL AI SAVINGS</p>
-              <p className="text-white font-black text-2xl transition-all duration-500 hover:scale-110">₹42,150</p>
-            </div>
-            <div
-              className={`flex items-center gap-2 border-2 border-black px-4 py-2 transition-all duration-300 hover:shadow-lg hover:translate-y-[-2px] ${
-                darkMode ? "bg-gray-700 text-white" : "bg-white"
-              }`}
-            >
-              <User className="w-5 h-5" />
-              <div>
-                <p className="font-black text-sm">{session?.user?.user_metadata?.name}</p>
-                <p className={`text-xs font-bold ${darkMode ? "text-gray-400" : "text-gray-600"}`}>{session?.user?.user_metadata?.occupation}</p>
-              </div>
+          <div className="flex items-center gap-4">
+            <div className={`px-4 py-2 border-4 border-black ${darkMode ? "bg-gray-700" : "bg-white"}`}>
+              <p className={`font-black text-sm ${darkMode ? "text-white" : "text-black"}`}>
+                {session?.user?.email?.split("@")[0]?.toUpperCase() || "GUEST"}
+              </p>
             </div>
             <Button
-              variant="ghost"
-              size="icon"
-              className={`text-white border-2 border-white transition-all duration-300 hover:scale-110 ${
-                darkMode ? "hover:bg-gray-700" : "hover:bg-blue-700"
-              }`}
+              className={`border-4 border-black font-black ${darkMode
+                ? "bg-gray-700 text-white hover:bg-gray-600"
+                : "bg-white text-black hover:bg-gray-100"
+                }`}
             >
               <Settings className="w-5 h-5" />
             </Button>
@@ -123,11 +143,10 @@ function App() {
             <button
               key={tab.id}
               onClick={() => handleTabChange(tab.id)}
-              className={`px-6 py-4 font-black text-sm border-r-4 border-black transition-all duration-300 flex items-center gap-2 ${
-                activeTab === tab.id
-                  ? `${darkMode ? "bg-blue-500" : "bg-blue-600"} text-white transform translate-y-[-2px] shadow-lg`
-                  : `${darkMode ? "bg-gray-700 text-white hover:bg-gray-600" : "bg-white text-black hover:bg-gray-50"} hover:transform hover:translate-y-[-1px]`
-              }`}
+              className={`px-6 py-4 font-black text-sm border-r-4 border-black transition-all duration-300 flex items-center gap-2 ${activeTab === tab.id
+                ? `${darkMode ? "bg-blue-500" : "bg-blue-600"} text-white transform translate-y-[-2px] shadow-lg`
+                : `${darkMode ? "bg-gray-700 text-white hover:bg-gray-600" : "bg-white text-black hover:bg-gray-50"} hover:transform hover:translate-y-[-1px]`
+                }`}
             >
               <span className={`transition-transform duration-300 ${activeTab === tab.id ? "rotate-12" : ""}`}>
                 {tab.icon}
@@ -141,7 +160,7 @@ function App() {
       {/* Main Content */}
       <main className="p-6">
         <div className={`transition-all duration-500 ${isLoading ? "opacity-50 blur-sm" : "opacity-100"}`}>
-          {activeTab === "DASHBOARD" && <DashboardContent darkMode={darkMode} />}
+          {activeTab === "DASHBOARD" && <DashboardContent darkMode={darkMode} aiAgents={aiAgents.length > 0 ? aiAgents : undefined} session={session} />}
           {activeTab === "SPENDING" && <SpendingContent darkMode={darkMode} />}
           {activeTab === "PAYMENTS" && <PaymentsContent darkMode={darkMode} />}
           {activeTab === "CALENDAR" && <BudgetPlannerContent darkMode={darkMode} />}
@@ -158,9 +177,110 @@ function App() {
   )
 }
 
-function DashboardContent({ darkMode }) {
- 
-  const aiAgents = [
+// Payment Agent Card Component
+function PaymentAgentCard({ darkMode, session }) {
+  const [paymentStatus, setPaymentStatus] = useState(null)
+  const [isProcessing, setIsProcessing] = useState(false)
+  const [paymentResponse, setPaymentResponse] = useState("")
+
+  useEffect(() => {
+    const fetchPaymentStatus = async () => {
+      if (!session?.user?.id) return
+      try {
+        const response = await fetch(`http://localhost:8000/api/user/${session.user.id}/payment-status`)
+        const data = await response.json()
+        if (data.status === "success") {
+          setPaymentStatus(data)
+        }
+      } catch (error) {
+        console.error("Error fetching payment status:", error)
+      }
+    }
+    fetchPaymentStatus()
+  }, [session])
+
+  const triggerPayments = async () => {
+    if (!session?.user?.id) {
+      alert("Please log in to process payments")
+      return
+    }
+
+    setIsProcessing(true)
+    setPaymentResponse("Payment Agent is checking your bills...")
+
+    try {
+      const response = await fetch(`http://localhost:8000/api/user/${session.user.id}/check-payments`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        const result = data.result
+
+        if (result.action === "bills_processed") {
+          setPaymentResponse(`✅ ${result.payment_result}`)
+        } else if (result.action === "no_surplus") {
+          setPaymentResponse(`⚠️ ${result.message}`)
+        } else {
+          setPaymentResponse(result.message || "Payment check complete")
+        }
+      } else {
+        setPaymentResponse("Failed to process payments")
+      }
+    } catch (error) {
+      setPaymentResponse("❌ Error connecting to Payment Agent")
+      console.error("Payment error:", error)
+    } finally {
+      setIsProcessing(false)
+    }
+  }
+
+  const pendingBills = paymentStatus?.agent_status?.pending_bills || 0
+  const budgetInfo = paymentStatus?.budget_info || {}
+  const safeToPay = budgetInfo.safe_to_pay || false
+
+  return (
+    <div className={`border-4 border-black p-6 ${darkMode ? "bg-gradient-to-r from-green-900 to-teal-900 text-white" : "bg-gradient-to-r from-green-500 to-teal-500 text-white"}`}>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center animate-pulse">
+            <DollarSign className="w-10 h-10 text-green-600" />
+          </div>
+          <div>
+            <h2 className="font-black text-2xl">PAYMENT AGENT (Gemini)</h2>
+            <p className="font-bold text-sm opacity-90">AI-Powered Bill Payment</p>
+            <div className="flex gap-4 mt-2">
+              <span className="text-xs font-bold bg-white bg-opacity-20 px-2 py-1 rounded">
+                {pendingBills} Pending Bills
+              </span>
+              <span className={`text-xs font-bold px-2 py-1 rounded ${safeToPay ? "bg-green-300 text-green-900" : "bg-yellow-300 text-yellow-900"}`}>
+                {safeToPay ? "Surplus Available" : "Low Budget"}
+              </span>
+            </div>
+          </div>
+        </div>
+        <Button
+          onClick={triggerPayments}
+          disabled={isProcessing}
+          className="bg-white text-green-600 border-4 border-black font-black px-6 py-3 hover:bg-gray-100 disabled:opacity-50"
+        >
+          {isProcessing ? "PROCESSING..." : "PAY BILLS NOW"}
+        </Button>
+      </div>
+
+      {paymentResponse && (
+        <div className="mt-4 bg-white border-4 border-black p-4 rounded">
+          <p className="font-bold text-lg text-black">{paymentResponse}</p>
+        </div>
+      )}
+    </div>
+  )
+}
+
+function DashboardContent({ darkMode, aiAgents: propAiAgents, session }) {
+
+  const defaultAiAgents = [
     {
       id: "auto-pay",
       name: "AUTO-PAY AGENT",
@@ -217,6 +337,8 @@ function DashboardContent({ darkMode }) {
     },
   ]
 
+  const aiAgents = propAiAgents || defaultAiAgents;
+
   const recentActivity = [
     {
       type: "RENT AUTOPAY",
@@ -248,24 +370,89 @@ function DashboardContent({ darkMode }) {
     },
   ]
 
+  const [budgetAgentResponse, setBudgetAgentResponse] = useState("")
+  const [isCheckingBudget, setIsCheckingBudget] = useState(false)
+
+  const checkBudgetWithAgent = async () => {
+    if (!session?.user?.id) {
+      alert("Please log in to check your budget")
+      return
+    }
+
+    setIsCheckingBudget(true)
+    setBudgetAgentResponse("Budget Agent is analyzing your spending...")
+
+    try {
+      // Call the dedicated budget check endpoint
+      const response = await fetch(`http://localhost:8000/api/user/${session.user.id}/budget-check`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        setBudgetAgentResponse(` ${data.agent_response}`)
+      } else {
+        setBudgetAgentResponse("Failed to get budget analysis")
+      }
+    } catch (error) {
+      setBudgetAgentResponse(" Error connecting to Budget Agent. Check if backend is running.")
+      console.error("Budget check error:", error)
+    } finally {
+      setIsCheckingBudget(false)
+    }
+  }
+
   return (
 
     <div className="space-y-8">
-       <div className="flex gap-4 border-4 p-4 border-black">
+      {/* Budget Agent Status Card */}
+      <div className={`border-4 border-black p-6 ${darkMode ? "bg-gradient-to-r from-blue-900 to-purple-900 text-white" : "bg-gradient-to-r from-blue-500 to-purple-500 text-white"}`}>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center animate-pulse">
+              <span className="text-4xl">bud</span>
+            </div>
+            <div>
+              <h2 className="font-black text-2xl">BUDGET AGENT (Gemini)</h2>
+              <p className="font-bold text-sm opacity-90">AI-Powered Budget Monitoring</p>
+            </div>
+          </div>
+          <Button
+            onClick={checkBudgetWithAgent}
+            disabled={isCheckingBudget}
+            className="bg-white text-blue-600 border-4 border-black font-black px-6 py-3 hover:bg-gray-100 disabled:opacity-50"
+          >
+            {isCheckingBudget ? "ANALYZING..." : "CHECK MY BUDGET"}
+          </Button>
+        </div>
+
+        {budgetAgentResponse && (
+          <div className="mt-4 bg-white bg-opacity-20 border-2 border-white p-4 rounded">
+            <p className="font-bold text-lg">{budgetAgentResponse}</p>
+          </div>
+        )}
+      </div>
+
+      {/* Payment Agent Status Card */}
+      <PaymentAgentCard darkMode={darkMode} session={session} />
+
+      <div className="flex gap-4 border-4 p-4 border-black">
         <h1 >Wallet</h1>
         <p>Budget This Week</p>
         <p>Spent</p>
 
-  </div>
+      </div>
 
       {/* AI Agents Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {aiAgents.map((agent, index) => (
           <div
             key={agent.id}
-            className={`border-4 border-black p-6 transition-all duration-500 hover:shadow-xl hover:transform hover:translate-y-[-4px] ${
-              darkMode ? "bg-gray-800 text-white" : "bg-white"
-            }`}
+            className={`border-4 border-black p-6 transition-all duration-500 hover:shadow-xl hover:transform hover:translate-y-[-4px] ${darkMode ? "bg-gray-800 text-white" : "bg-white"
+              }`}
             style={{ animationDelay: `${index * 100}ms` }}
           >
             <div className="flex items-center justify-between mb-4">
@@ -277,13 +464,12 @@ function DashboardContent({ darkMode }) {
                 </div>
                 <div className="flex items-center gap-2">
                   <span
-                    className={`w-3 h-3 rounded-full ${
-                      agent.status === "Active"
-                        ? "bg-green-500 animate-pulse"
-                        : agent.status === "Processing"
-                          ? "bg-yellow-500 animate-pulse"
-                          : "bg-gray-400"
-                    }`}
+                    className={`w-3 h-3 rounded-full ${agent.status === "Active"
+                      ? "bg-green-500 animate-pulse"
+                      : agent.status === "Processing"
+                        ? "bg-yellow-500 animate-pulse"
+                        : "bg-gray-400"
+                      }`}
                   ></span>
                   <span className={`text-xs font-bold ${darkMode ? "text-gray-400" : "text-gray-600"}`}>
                     {agent.status}
@@ -314,7 +500,7 @@ function DashboardContent({ darkMode }) {
 
               {agent.saved !== "₹0" && (
                 <div className="bg-blue-600 text-white p-2 border-2 border-black">
-                  <p className="text-xs font-bold">💰 SAVED: {agent.saved}</p>
+                  <p className="text-xs font-bold">SAVED: {agent.saved}</p>
                 </div>
               )}
             </div>
@@ -331,18 +517,16 @@ function DashboardContent({ darkMode }) {
             {recentActivity.map((activity, index) => (
               <div
                 key={index}
-                className={`flex items-start gap-3 p-3 border-2 transition-all duration-300 hover:border-black ${
-                  darkMode ? "border-gray-600" : "border-gray-200"
-                }`}
+                className={`flex items-start gap-3 p-3 border-2 transition-all duration-300 hover:border-black ${darkMode ? "border-gray-600" : "border-gray-200"
+                  }`}
               >
                 <div
-                  className={`w-3 h-3 rounded-full mt-2 ${
-                    activity.color === "green"
-                      ? "bg-green-500"
-                      : activity.color === "blue"
-                        ? "bg-blue-500"
-                        : "bg-purple-500"
-                  }`}
+                  className={`w-3 h-3 rounded-full mt-2 ${activity.color === "green"
+                    ? "bg-green-500"
+                    : activity.color === "blue"
+                      ? "bg-blue-500"
+                      : "bg-purple-500"
+                    }`}
                 ></div>
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
@@ -414,50 +598,104 @@ function DashboardContent({ darkMode }) {
 }
 
 function SpendingContent({ darkMode }) {
+  const [spendingData, setSpendingData] = useState({ total: 0, budget: 0, percentage: 0 })
+  const [loading, setLoading] = useState(true)
+  const [agentStatus, setAgentStatus] = useState(null)
+  const { session } = useAuth()
+
+  useEffect(() => {
+    const fetchSpendingData = async () => {
+      if (!session?.user?.id) return
+      try {
+        const response = await fetch(`http://localhost:8000/api/user/${session.user.id}/dashboard`)
+        const data = await response.json()
+        if (data.spending) {
+          setSpendingData(data.spending)
+        }
+      } catch (error) {
+        console.error("Error fetching spending data:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchSpendingData()
+  }, [session])
+
+  const checkBudget = async () => {
+    setAgentStatus("Analyzing your budget...")
+    try {
+      const response = await fetch(`http://localhost:8000/api/user/${session.user.id}/budget-check`, {
+        method: 'POST'
+      })
+      const data = await response.json()
+      setAgentStatus(data.agent_response)
+    } catch (error) {
+      setAgentStatus("Error connecting to agent")
+    }
+  }
+
   return (
     <div className="space-y-6">
       <div className="border-b-4 border-black p-6">
-      <div className="flex items-center justify-between">
-        <h2 className={`text-3xl font-black pb-2 ${darkMode ? "text-white" : ""}`}>
-          SPENDING ANALYTICS
-        </h2>
-        <div className="flex gap-4">
-          <Select defaultValue="this-month">
-            <SelectTrigger className="w-40 border-4 border-black font-black">
-              <SelectValue placeholder="THIS MONTH" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="this-month">THIS MONTH</SelectItem>
-              <SelectItem value="last-month">LAST MONTH</SelectItem>
-              <SelectItem value="last-3-months">LAST 3 MONTHS</SelectItem>
-            </SelectContent>
-          </Select>
-          <Button className="bg-blue-600 border-4 border-black font-black hover:bg-blue-700">
-            <Filter className="w-4 h-4 mr-2" />
-            FILTER
-          </Button>
+        <div className="flex items-center justify-between">
+          <h2 className={`text-3xl font-black pb-2 ${darkMode ? "text-white" : ""}`}>
+            SPENDING ANALYTICS
+          </h2>
+          <div className="flex gap-4">
+            <Button
+              onClick={checkBudget}
+              className="bg-purple-600 border-4 border-black font-black hover:bg-purple-700 animate-pulse"
+            >
+              <Bot className="w-4 h-4 mr-2" />
+              CHECK MY BUDGET
+            </Button>
+            <Select defaultValue="this-month">
+              <SelectTrigger className="w-40 border-4 border-black font-black">
+                <SelectValue placeholder="THIS MONTH" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="this-month">THIS MONTH</SelectItem>
+                <SelectItem value="last-month">LAST MONTH</SelectItem>
+                <SelectItem value="last-3-months">LAST 3 MONTHS</SelectItem>
+              </SelectContent>
+            </Select>
+            <Button className="bg-blue-600 border-4 border-black font-black hover:bg-blue-700">
+              <Filter className="w-4 h-4 mr-2" />
+              FILTER
+            </Button>
+          </div>
         </div>
-      </div>
 
-      {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className={`p-6 border-8 border-black ${darkMode ? "bg-gray-800 text-white" : "bg-black text-white"}`}>
-          <p className="font-black text-sm mb-2">TOTAL SPENT</p>
-          <p className="font-black text-3xl">₹34,000</p>
+        {/* Agent Status Alert */}
+        {agentStatus && (
+          <div className="mt-4 p-4 bg-yellow-100 border-4 border-black flex items-start gap-3">
+            <Bot className="w-6 h-6 text-black" />
+            <div>
+              <p className="font-black text-sm">BUDGET AGENT SAYS:</p>
+              <p className="font-bold text-lg">{agentStatus}</p>
+            </div>
+          </div>
+        )}
+
+        {/* Summary Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-6">
+          <div className={`p-6 border-8 border-black ${darkMode ? "bg-gray-800 text-white" : "bg-black text-white"}`}>
+            <p className="font-black text-sm mb-2">TOTAL SPENT</p>
+            <p className="font-black text-3xl">₹{spendingData.total.toLocaleString()}</p>
+          </div>
+          <div className="bg-blue-600 text-white p-6 border-8 border-black">
+            <p className="font-black text-sm mb-2">BUDGET LIMIT</p>
+            <p className="font-black text-3xl">₹{spendingData.budget.toLocaleString()}</p>
+          </div>
+          <div className={`p-6 border-8 border-black ${darkMode ? "bg-gray-700 text-white" : "bg-white"}`}>
+            <p className="font-black text-sm mb-2">BUDGET USED</p>
+            <p className="font-black text-3xl">{spendingData.percentage}%</p>
+          </div>
+          <div className="bg-green-500 text-white p-6 border-8 border-black">
+            <p className="font-black text-sm mb-2">REMAINING</p>
+            <p className="font-black text-3xl">₹{(spendingData.budget - spendingData.total).toLocaleString()}</p>
+          </div>
         </div>
-        <div className="bg-blue-600 text-white p-6 border-8 border-black">
-          <p className="font-black text-sm mb-2">DAILY AVERAGE</p>
-          <p className="font-black text-3xl">₹1,133</p>
-        </div>
-        <div className={`p-6 border-8 border-black ${darkMode ? "bg-gray-700 text-white" : "bg-white"}`}>
-          <p className="font-black text-sm mb-2">TRANSACTIONS</p>
-          <p className="font-black text-3xl">98</p>
-        </div>
-        <div className="bg-green-500 text-white p-6 border-8 border-black">
-          <p className="font-black text-sm mb-2">AI SAVED</p>
-          <p className="font-black text-3xl">₹5,200</p>
-        </div>
-      </div>
       </div>
 
       {/* Category Breakdown and Monthly Trend */}
@@ -507,14 +745,13 @@ function SpendingContent({ darkMode }) {
             ].map((data, index) => (
               <div key={index} className="flex items-center gap-4">
                 <span className="font-black text-sm w-8">{data.month}</span>
-                <div className="flex-1 flex border-4 border-black h-8">
+                <div className="flex-1 h-8 bg-gray-100 border-4 border-black relative">
                   <div
-                    className="bg-blue-600 transition-all duration-1000"
-                    style={{ width: `${(data.amount / 35000) * 100}%` }}
+                    className="h-full bg-blue-500 absolute top-0 left-0"
+                    style={{ width: `${(data.amount / 40000) * 100}%` }}
                   ></div>
-                  <div className="bg-gray-200" style={{ width: `${100 - (data.amount / 35000) * 100}%` }}></div>
                 </div>
-                <span className="font-black text-sm w-20">₹{data.amount.toLocaleString()}</span>
+                <span className="font-black text-sm w-16 text-right">₹{(data.amount / 1000).toFixed(1)}k</span>
               </div>
             ))}
           </div>
@@ -535,8 +772,34 @@ function SpendingContent({ darkMode }) {
 
 function PaymentsContent({ darkMode }) {
   const [activePaymentTab, setActivePaymentTab] = useState("AUTO-PAYMENTS")
- 
-  const {handleAddPayment} = useAuth();
+  const [autoPayments, setAutoPayments] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  const { session } = useAuth();
+
+  useEffect(() => {
+    const fetchAutoPayments = async () => {
+      if (!session?.user?.id) return
+      try {
+        const response = await fetch(`http://localhost:8000/api/user/${session.user.id}/pending-bills`)
+        const data = await response.json()
+        if (data.status === "success" && data.bills) {
+          // Filter only autopay-enabled bills
+          const autopayBills = data.bills.bills.filter(bill => bill.autopay)
+          setAutoPayments(autopayBills)
+        }
+      } catch (error) {
+        console.error("Error fetching autopayments:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchAutoPayments()
+  }, [session])
+
+  const totalAutopay = autoPayments.reduce((sum, payment) => sum + payment.amount, 0)
+  const activeCount = autoPayments.filter(p => p.priority !== 'completed').length
+  const highPriority = autoPayments.filter(p => p.is_overdue || p.priority === 'high').length
 
   return (
     <div className="space-y-6">
@@ -550,11 +813,10 @@ function PaymentsContent({ darkMode }) {
           <button
             key={tab}
             onClick={() => setActivePaymentTab(tab)}
-            className={`px-6 py-3 font-black text-sm border-4 border-black transition-all duration-300 ${
-              activePaymentTab === tab
-                ? "bg-blue-600 text-white"
-                : `${darkMode ? "bg-gray-700 text-white hover:bg-gray-600" : "bg-white text-black hover:bg-gray-50"}`
-            }`}
+            className={`px-6 py-3 font-black text-sm border-4 border-black transition-all duration-300 ${activePaymentTab === tab
+              ? "bg-blue-600 text-white"
+              : `${darkMode ? "bg-gray-700 text-white hover:bg-gray-600" : "bg-white text-black hover:bg-gray-50"}`
+              }`}
           >
             {tab}
           </button>
@@ -565,15 +827,15 @@ function PaymentsContent({ darkMode }) {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className={`p-6 border-8 border-black ${darkMode ? "bg-gray-800 text-white" : "bg-black text-white"}`}>
           <p className="font-black text-sm mb-2">MONTHLY AUTO-PAY</p>
-          <p className="font-black text-3xl">₹17,000</p>
+          <p className="font-black text-3xl">₹{totalAutopay.toLocaleString()}</p>
         </div>
         <div className="bg-blue-600 text-white p-6 border-8 border-black">
           <p className="font-black text-sm mb-2">ACTIVE PAYMENTS</p>
-          <p className="font-black text-3xl">3</p>
+          <p className="font-black text-3xl">{activeCount}</p>
         </div>
         <div className={`p-6 border-8 border-black ${darkMode ? "bg-gray-700 text-white" : "bg-white"}`}>
           <p className="font-black text-sm mb-2">HIGH PRIORITY DUES</p>
-          <p className="font-black text-3xl">2</p>
+          <p className="font-black text-3xl">{highPriority}</p>
         </div>
       </div>
 
@@ -581,72 +843,55 @@ function PaymentsContent({ darkMode }) {
       {activePaymentTab === "AUTO-PAYMENTS" && (
         <div className={`border-8 border-black p-6 ${darkMode ? "bg-gray-800 text-white" : "bg-white"}`}>
           <h3 className="font-black text-xl mb-4">AUTOMATED PAYMENTS</h3>
-          <div className="space-y-4">
-            {[
-              {
-                name: "Monthly Rent",
-                status: "ACTIVE",
-                amount: "₹15,000",
-                dueDate: "1 of every month",
-                nextPayment: "1 Jul 2024",
-                method: "HDFC Bank ****1234",
-              },
-              {
-                name: "Electricity Bill",
-                status: "ACTIVE",
-                amount: "₹1,200",
-                dueDate: "5 of every month",
-                nextPayment: "5 Jul 2024",
-                method: "SBI Bank ****5678",
-              },
-              {
-                name: "Internet Bill",
-                status: "ACTIVE",
-                amount: "₹800",
-                dueDate: "10 of every month",
-                nextPayment: "10 Jul 2024",
-                method: "HDFC Bank ****1234",
-              },
-            ].map((payment, index) => (
-              <div key={index} className="border-4 border-black p-4 flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-2">
-                    <span className="font-black text-lg">{payment.name}</span>
-                    <span className="bg-green-500 text-white px-2 py-1 text-xs font-black">{payment.status}</span>
+          {loading ? (
+            <p className="text-center py-8 font-bold">Loading payments...</p>
+          ) : autoPayments.length === 0 ? (
+            <p className="text-center py-8 font-bold">No autopay bills found. Enable autopay when adding a new payment!</p>
+          ) : (
+            <div className="space-y-4">
+              {autoPayments.map((payment, index) => (
+                <div key={index} className="border-4 border-black p-4 flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2">
+                      <span className="font-black text-lg">{payment.name}</span>
+                      <span className={`px-2 py-1 text-xs font-black ${payment.is_overdue ? 'bg-red-500' : 'bg-green-500'} text-white`}>
+                        {payment.is_overdue ? 'OVERDUE' : 'ACTIVE'}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-4 gap-8 flex-1 ml-8">
+                    <div>
+                      <p className="text-xs font-bold text-gray-600">AMOUNT:</p>
+                      <p className="font-black">₹{payment.amount.toLocaleString()}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold text-gray-600">DUE DATE:</p>
+                      <p className="font-black">{payment.due_date}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold text-gray-600">CATEGORY:</p>
+                      <p className="font-black">{payment.category}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold text-gray-600">PRIORITY:</p>
+                      <p className="font-black uppercase">{payment.priority}</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button size="sm" className="bg-red-500 border-2 border-black font-black hover:bg-red-600">
+                      DISABLE
+                    </Button>
+                    <Button size="sm" variant="outline" className="border-2 border-black font-black bg-transparent">
+                      <Edit className="w-4 h-4" />
+                    </Button>
+                    <Button size="sm" variant="outline" className="border-2 border-black font-black bg-transparent">
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
                   </div>
                 </div>
-                <div className="grid grid-cols-4 gap-8 flex-1 ml-8">
-                  <div>
-                    <p className="text-xs font-bold text-gray-600">AMOUNT:</p>
-                    <p className="font-black">{payment.amount}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold text-gray-600">DUE DATE:</p>
-                    <p className="font-black">{payment.dueDate}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold text-gray-600">NEXT PAYMENT:</p>
-                    <p className="font-black">{payment.nextPayment}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold text-gray-600">PAYMENT METHOD:</p>
-                    <p className="font-black">{payment.method}</p>
-                  </div>
-                </div>
-                <div className="flex gap-2">
-                  <Button size="sm" className="bg-red-500 border-2 border-black font-black hover:bg-red-600">
-                    DISABLE
-                  </Button>
-                  <Button size="sm" variant="outline" className="border-2 border-black font-black bg-transparent">
-                    <Edit className="w-4 h-4" />
-                  </Button>
-                  <Button size="sm" variant="outline" className="border-2 border-black font-black bg-transparent">
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 
@@ -662,36 +907,79 @@ function PaymentsContent({ darkMode }) {
 // BDUGET PLANNER CONTENT
 
 function BudgetPlannerContent({ darkMode }) {
+  const [budget, setBudget] = useState("")
+  const { session } = useAuth()
+
+  const handleSetBudget = async (e) => {
+    e.preventDefault()
+    try {
+      const response = await fetch(`http://localhost:8000/api/user/${session.user.id}/budget`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ week_budget: parseFloat(budget) })
+      })
+      if (response.ok) {
+        alert("Budget updated successfully!")
+        setBudget("")
+      } else {
+        alert("Failed to update budget")
+      }
+    } catch (error) {
+      console.error("Error setting budget:", error)
+      alert("Error setting budget")
+    }
+  }
+
   return (
     <div className="space-y-6">
       <h2 className={`text-3xl font-black border-b-4 border-black pb-2 ${darkMode ? "text-white" : ""}`}>
         BUDGET PLANNER
       </h2>
       <div className={`border-8 border-black p-6 ${darkMode ? "bg-gray-800 text-white" : "bg-white"}`}>
-        <h1>Add budget</h1>
+        <h3 className="font-black text-xl mb-4">SET WEEKLY BUDGET</h3>
+        <form onSubmit={handleSetBudget} className="space-y-4">
+          <div>
+            <label className="block font-black text-sm mb-2">WEEKLY LIMIT (₹)</label>
+            <input
+              type="number"
+              value={budget}
+              onChange={(e) => setBudget(e.target.value)}
+              className="w-full border-4 border-black p-2 font-bold text-black"
+              placeholder="e.g. 5000"
+              required
+            />
+          </div>
+          <button type="submit" className="bg-green-600 text-white px-6 py-3 border-4 border-black font-black hover:bg-green-700">
+            SAVE BUDGET
+          </button>
+        </form>
       </div>
     </div>
   )
 }
 
 function SettingsContent({ darkMode, toggleDarkMode }) {
+  const { session } = useAuth()
+
   return (
     <div className="space-y-6">
       <h2 className={`text-3xl font-black border-b-4 border-black pb-2 ${darkMode ? "text-white" : ""}`}>SETTINGS</h2>
       <div className={`border-8 border-black p-6 ${darkMode ? "bg-gray-800 text-white" : "bg-white"}`}>
         <div className="space-y-6">
-          <div className="flex items-center justify-between p-4 border-4 border-black">
+          {/* Dark Mode Toggle */}
+          <div className={`flex items-center justify-between p-6 border-4 ${darkMode ? "border-gray-600 bg-gray-700" : "border-black bg-gray-50"}`}>
             <div>
               <h3 className="font-black text-lg">DARK MODE</h3>
-              <p className={`text-sm font-bold ${darkMode ? "text-gray-400" : "text-gray-600"}`}>
+              <p className={`text-sm font-bold ${darkMode ? "text-gray-300" : "text-gray-600"}`}>
                 Toggle between light and dark themes
               </p>
             </div>
             <Button
               onClick={toggleDarkMode}
-              className={`font-black transition-all duration-300 ${
-                darkMode ? "bg-yellow-500 text-black hover:bg-yellow-400" : "bg-gray-800 text-white hover:bg-gray-700"
-              }`}
+              className={`font-black transition-all duration-300 ${darkMode
+                ? "bg-yellow-500 text-black hover:bg-yellow-400 border-yellow-600"
+                : "bg-gray-800 text-white hover:bg-gray-700"
+                }`}
             >
               {darkMode ? (
                 <>
@@ -707,18 +995,79 @@ function SettingsContent({ darkMode, toggleDarkMode }) {
             </Button>
           </div>
 
+          {/* User Info */}
+          <div className={`p-6 border-4 ${darkMode ? "border-gray-600 bg-gray-700" : "border-black bg-blue-50"}`}>
+            <h3 className="font-black text-lg mb-4">ACCOUNT INFORMATION</h3>
+            <div className="space-y-3">
+              <div className="flex items-center gap-3">
+                <User className="w-5 h-5" />
+                <div>
+                  <p className={`text-xs font-bold ${darkMode ? "text-gray-400" : "text-gray-500"}`}>USER ID</p>
+                  <p className="font-black text-sm">{session?.user?.id?.slice(0, 20)}...</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <DollarSign className="w-5 h-5" />
+                <div>
+                  <p className={`text-xs font-bold ${darkMode ? "text-gray-400" : "text-gray-500"}`}>EMAIL</p>
+                  <p className="font-black text-sm">{session?.user?.email || "Not available"}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Settings Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="p-4 border-4 border-black">
+            <div className={`p-6 border-4 ${darkMode ? "border-gray-600 bg-gray-700 hover:bg-gray-650" : "border-black bg-white hover:bg-gray-50"} transition-colors cursor-pointer`}>
               <h4 className="font-black text-md mb-2">NOTIFICATIONS</h4>
-              <p className={`text-sm font-bold ${darkMode ? "text-gray-400" : "text-gray-600"}`}>
+              <p className={`text-sm font-bold ${darkMode ? "text-gray-300" : "text-gray-600"}`}>
                 Manage your notification preferences
               </p>
+              <div className="mt-4 space-y-2">
+                <label className="flex items-center gap-2">
+                  <input type="checkbox" defaultChecked className="w-4 h-4" />
+                  <span className="text-sm font-bold">Budget Alerts</span>
+                </label>
+                <label className="flex items-center gap-2">
+                  <input type="checkbox" defaultChecked className="w-4 h-4" />
+                  <span className="text-sm font-bold">Payment Reminders</span>
+                </label>
+              </div>
             </div>
-            <div className="p-4 border-4 border-black">
-              <h4 className="font-black text-md mb-2">ACCOUNT</h4>
-              <p className={`text-sm font-bold ${darkMode ? "text-gray-400" : "text-gray-600"}`}>
+
+            <div className={`p-6 border-4 ${darkMode ? "border-gray-600 bg-gray-700 hover:bg-gray-650" : "border-black bg-white hover:bg-gray-50"} transition-colors cursor-pointer`}>
+              <h4 className="font-black text-md mb-2">PRIVACY & SECURITY</h4>
+              <p className={`text-sm font-bold ${darkMode ? "text-gray-300" : "text-gray-600"}`}>
                 Update your profile and security settings
               </p>
+              <div className="mt-4">
+                <Button className={`w-full ${darkMode ? "bg-blue-600 hover:bg-blue-700" : "bg-blue-500 hover:bg-blue-600"} text-white font-black`}>
+                  CHANGE PASSWORD
+                </Button>
+              </div>
+            </div>
+
+            <div className={`p-6 border-4 ${darkMode ? "border-gray-600 bg-gray-700 hover:bg-gray-650" : "border-black bg-white hover:bg-gray-50"} transition-colors cursor-pointer`}>
+              <h4 className="font-black text-md mb-2">DATA & EXPORT</h4>
+              <p className={`text-sm font-bold ${darkMode ? "text-gray-300" : "text-gray-600"}`}>
+                Download your spending data
+              </p>
+              <div className="mt-4">
+                <Button className={`w-full ${darkMode ? "bg-green-600 hover:bg-green-700" : "bg-green-500 hover:bg-green-600"} text-white font-black`}>
+                  EXPORT DATA
+                </Button>
+              </div>
+            </div>
+
+            <div className={`p-6 border-4 ${darkMode ? "border-gray-600 bg-gray-700 hover:bg-gray-650" : "border-black bg-white hover:bg-gray-50"} transition-colors cursor-pointer`}>
+              <h4 className="font-black text-md mb-2">ABOUT</h4>
+              <p className={`text-sm font-bold ${darkMode ? "text-gray-300" : "text-gray-600"}`}>
+                App version and information
+              </p>
+              <div className="mt-4">
+                <p className="text-xs font-bold">Version 1.0.0</p>
+                <p className={`text-xs font-bold ${darkMode ? "text-gray-400" : "text-gray-500"}`}>© 2024 PennyPal</p>
+              </div>
             </div>
           </div>
         </div>

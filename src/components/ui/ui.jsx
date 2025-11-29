@@ -382,4 +382,24 @@ export {
   Sun,
   Plus,
   Check,
+  Bot,
 }
+
+const Bot = ({ className = "", size = 20 }) => (
+  <svg
+    className={className}
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
+    <path d="M12 2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2 2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" />
+    <rect width="18" height="12" x="3" y="6" rx="2" />
+    <path d="M11 10h2" />
+    <path d="M11 14h2" />
+    <path d="M8 10h.01" />
+    <path d="M16 10h.01" />
+  </svg>
+)
